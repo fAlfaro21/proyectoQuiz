@@ -74,8 +74,7 @@ const questions = [
             id: "tierraAguaAire",
             name: "choice",
             value: "tierraAguaAire",
-        }
-        
+        }        
     ],
     answer: "tierraAguaAire"},
     {title: '¿Cómo consiguen comunicarse entre ellas con tanta eficiencia?',
@@ -102,15 +101,15 @@ const questions = [
             label: "Todas las respuestas son correctas",
             id: "todasCorrectas",
             name: "choice",
-            value: "todasLasRespuestasSonCorrectas",
+            value: "todasCorrectas",
         }
     ],
-    answer: "todasLasRespuestasSonCorrectas"},
+    answer: "todasCorrectas"},
     {title: '¿Cómo se dividen las extensas colonias de las hormigas?',
     choices: [
         {
             label: "En castas",
-            id: "castas",
+            id: "enCastas",
             name: "choice",
             value: "enCastas",
         },
@@ -264,6 +263,8 @@ let countLimit = 0;
 let youCanGo = true;
 let usersChoice = "";
 let index;
+let correctAnswerCounter = 0;
+let numberOfQuestionsAnswered = 0;
 
 function printTheInput(questions, questionNumber, i){
             choicesDiv = document.getElementById("questionPack");
@@ -293,7 +294,6 @@ function printTheInput(questions, questionNumber, i){
             printInput.setAttributeNode(printClass);
      }
 
-//FUNCION DESACTIVADA
 function printTheLabel(questions, questionNumber, i) {
             choicesDiv = document.getElementById("questionPack");
             printLabel = document.createElement("label"); 
@@ -373,26 +373,40 @@ function getAnswerValue(){
     userAnswerValue = answerValue.value;
 }
 
-function validateAnswer(index, usersChoice){
-    //inputTagToManage = document.getElementById("usersChoice");
-    if (usersChoice == questions[index].answer){
-        //Marcala como correcta    
-        console.log("Es correcta!");
-        console.log(inputTagToManage);
-        console.log(usersChoice);
+function validateAnswer(usersChoice){
+    
+    //console.log("User choice: " + usersChoice);
+    //console.log("Index: " + index);
+    //console.log("Respuesta correcta: " + questions[questionNumber-1].answer);
+    //console.log("Número de pregunta actual: " + questionNumber);
+    if (usersChoice == questions[questionNumber-1].answer){
+        //Respuesta correcta: la marca en verde        
         
         printClass = document.createAttribute("class");
         printClass.value = "correctAnswer";
         inputTagToManage.setAttributeNode(printClass);
+
+        correctAnswerCounter++
+        numberOfQuestionsAnswered++
     }
     else {
-        //Marcala en rojo
-        console.log("Es incorrecta!");
+        //Respuesta incorrecta: la marca en rojo
         printClass = document.createAttribute("class");
         printClass.value = "incorrectAnswer";
         inputTagToManage.setAttributeNode(printClass);
-        //classList.add("blackColor");
+
+        numberOfQuestionsAnswered++
     }
+}
+
+function printResults(){
+    
+    questionsDiv = document.getElementById("questionPack");    
+
+    gameInfo = document.createElement("legend");
+    gameInfo.innerText = "Haz conseguido " + correctAnswerCounter + " acierto(s) de un total de " + numberOfQ.value + " preguntas";
+    questionsDiv.appendChild(gameInfo);    
+    
 }
 
 resetButton.addEventListener ("click", resetGame);
@@ -418,9 +432,16 @@ startButton.addEventListener ("click", function() {
         if (questionNumber == numberOfQ.value && youCanGo){
             changeButtonTextToFinish();
         }
-        //appendGameInfo(questionNumber);
     }
 }); 
+
+startButton.addEventListener ("click", function(){
+     
+    if (numberOfQuestionsAnswered == numberOfQ.value){ 
+        //Si el total de respuestas han sido respondias
+        printResults();
+    }
+});
 
 document
     .getElementById("questionPack")
@@ -429,42 +450,23 @@ document
         const allTheLabelsChoices = document.getElementsByTagName("label");
         let arrayChoices = Array.from(allTheChoices);
         let arrayLabels = Array.from(allTheLabelsChoices);
-        
-        //console.log(arrayChoices[0].checked);
-        //console.log(arrayChoices[1].checked);
 
         for ( index = 0; index < arrayChoices.length; index++) {
+
             if (arrayChoices[index].checked){
                 usersChoice = arrayChoices[index].id;
                 inputTagToManage = allTheLabelsChoices[index];
-               
-                //console.log(inputTagToManage);
-                validateAnswer(index, usersChoice);
+                validateAnswer(usersChoice);
             };
         }
         
         //Va a marcar la opción correcta
 
         for ( index1 = 0; index1 < arrayLabels.length; index1++) {
-
-            console.log(allTheLabelsChoices[index1].getAttribute("for"));
-
-            //for ( index2 = 0; index2 < questions[questionNumber-1].choices.length; index2++) {
-            //labelTagToManage = allTheLabelsChoices[index];
-            //theGoodAnswer = allTheLabelsChoices.querySelector("[for='usersChoice']");
-            //console.log(theGoodAnswer);
-            //console.log(arrayLabels[index]);
-            //console.log("usersChoice: " + usersChoice);
-            //if (arrayLabels[index].id == "usersChoice"){
-             //   theGoodAnswer = arrayLabels[index].id;
-                //console.log("The good answer: " + theGoodAnswer);
-              //  printClass = document.createAttribute("class");
-             //   printClass.value = "correctAnswer"; 
-             //   theGoodAnswer.setAttributeNode(printClass);
-            //};
-                
-                //console.log(questions[questionNumber-1].choices[index2]);
-            if(allTheLabelsChoices[index1].getAttribute("for") == questions[questionNumber-1].answer){
+            //console.log("ArrayLabelLength: " + arrayLabels.length);
+            //console.log("for: " + allTheLabelsChoices[index1].getAttribute("for"));
+            //console.log("Correct answer: " + questions[questionNumber-1].answer);
+            if(allTheLabelsChoices[index1].getAttribute("for") == questions[questionNumber-1].answer){                
                 let theGoodAnswer = allTheLabelsChoices[index1];
                 printClass = document.createAttribute("class");
                 printClass.value = "correctAnswer"; 
@@ -475,90 +477,3 @@ document
 
             
     });
-
-// document
-//     .getElementById("himenopteros")
-//     .addEventListener("change", function(){
-//     //verifyResult();
-//     console.log("Entro!");
-// });
-
-// function verifyResult(){
-//     if (document.getElementsByName("login").value == ""){
-
-//         document
-//         .getElementById("loginErrorMessage")
-//        .innerText = "Esta mal";
-//        document
-//          .getElementById("login")
-//          .style
-//          .backgroundColor = "crimson";
-     
-//          // o
-     
-//          // this.style.backgroundColor = "crimson";
-//      }
-//      else{
-//        document
-//        .getElementById("loginErrorMessage")
-//        .innerText = "";
-//      }
-//     }
-//No consigue leer un elemento que no existe, que está creado virtualmente:
-//answerValue = document.getElementsByName("actor");
-// answerValue.addEventListener("input", function(){
-//         getAnswerValue();
-//     });
-
-// start.addEventListener ("click", function(){
-//     cleanScreen();
-//     printQandA(questions,questionNumber);
-//     questionNumber++;
-//     appendButtonNext();
-// });
-
-//document.replaceChild(new, old)
-//querySelector: ej: Change the text of the first <p> element in a <div> element
-
-// document.addEventListener("click", e => {
-//     if (e.target.id === "questionBtn") {
-//       
-//       e.preventDefault(); //con esto hacemos que no tenga el comportamiento establecido
-//     }
-//     else if (e.target.tagName === "LABEL") {
-//       document.getElementById("questionBtn").click(); //simulo el haber pinchado sobre el botón
-//       const $label = document.querySelectorAll("label");
-//       const $selectedInput = document.querySelector(`#${e.target.htmlFor}`);
-//       const $selectedLabel = document.querySelector(`label[for=answer_${$selectedInput.value}]`);
-  
-//       result = validateAnswer($selectedInput, $selectedLabel, validAnswer);
-//       if (result) {
-//         result.quID = quizQuestions[questionIndex].questionID;
-//         results.push(result);
-//         console.log(results);
-//         questionIndex++;
-//         if (results.length === NUM_QUESTIONS) {
-//           setTimeout(() => {
-//             printResults(results, $screenParent, $formParent);
-//           }, 1000);
-//         }
-//         else {
-//           setTimeout(() => {
-//             //TODO unificar estas dos funciones
-//             printQuestion(quizQuestions[questionIndex], $formParent);
-//             changeScreen($screenParent, questionIndex, NUM_QUESTIONS);
-//           }, 1000); //TODO: Volver a poner un tiempo mayor de espera
-//         }
-//       }
-//     }
-//     else if (e.target.classList.contains("answerWrapper")) {
-//       e.target.lastChild.click(); //hacemos lo mismo que si se hace click en el label
-//       console.log("click")
-//     }
-//     else if (e.target.classList.contains("goIndex")) {
-//       window.location.assign("index.html");
-//     }
-//     else if (e.target.classList.contains("newGame")) {
-//       window.location.assign("quiz.html");
-//     }
-//   })
