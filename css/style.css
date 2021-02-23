@@ -1,0 +1,104 @@
+body{
+    font-family: "Fredoka One", cursive;
+    font-size: 20px;
+    background-color: rgb(4, 4, 54);
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    color: #FFF;
+}
+
+.welcomeButton{
+    font-family: "Fredoka One", cursive;
+    background-color: rgb(4, 4, 54);
+    font-size: 20px;
+    color: #FFF;
+    text-decoration: none;
+    margin: 0 auto;
+    display: table;
+    padding: 20px 50px;
+    border-radius: 30px;
+    box-shadow: 10px 4px #50a4ff, 10px 4px 2px rgba(0,0,0,.3),
+    20px -4px #ffb551, 20px -4px 2px rgba(0,0,0,.3), 30px 8px #e7545e, 30px 8px 2px rgba(0,0,0,.3), 10px -8px #28b78d, -10px 8px 2px rgba(0,0,0,.3), -20px 8px #c051eb, -20px 8px 2px rgba(0,0,0,.3);
+}
+
+.choices {
+    /* visibility: hidden;
+    width: 0;
+    height: 0;
+    margin: 0; */
+
+    appearance: auto;
+    user-select: none;
+    white-space: pre;
+    align-items: flex-start;
+    text-align: center;
+    cursor: default;
+    color: -internal-light-dark(black, white);
+    background-color: -internal-light-dark(rgb(239, 239, 239), rgb(59, 59, 59));
+    box-sizing: border-box;
+    padding: 1px 6px;
+    border-width: 2px;
+    border-style: outset;
+    border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+    border-image: initial;
+
+  }
+
+input{
+    font-family: "Fredoka One", cursive;
+    font-size: 20px;
+}
+
+main{
+    display: flex;
+    width: 50%;
+    flex-direction: column;
+  }
+
+.column{
+    display: flex;
+    flex-direction: column;
+}
+
+#homePage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100px;
+    padding-top: 15px;
+}
+
+legend{
+    text-align: center;
+    height: 20vh;
+}
+
+.incorrectAnswer{
+    border: solid red;
+}
+
+.correctAnswer{
+    border: solid greenyellow;
+}
+
+/* ------------ RESPONSIVE --------------*/
+/* ------------ 768 o menos ------------ */
+.wrapper {
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* ---------- De 769 a 1366 ------------ */
+
+@media screen and (min-width: 769px) {
+    .wrapper {
+    width: 769px;
+}
+
+ /* ---------- De 1367 a mas ------------ */
+
+@media screen and (min-width: 1367px) {
+    .wrapper {
+      width: 960px;
+}
