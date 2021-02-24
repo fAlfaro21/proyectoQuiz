@@ -267,6 +267,7 @@ let correctAnswerCounter = 0;
 let numberOfQuestionsAnswered = 0;
 let paint = false;
 let contenedor = [];
+let inputTagToManage;
 
 function printTheInput(questions, questionNumber, i){
             choicesDiv = document.getElementById("containerPack");
@@ -286,10 +287,6 @@ function printTheInput(questions, questionNumber, i){
             printType = document.createAttribute("type"); 
             printType.value = "radio"; 
             printInput.setAttributeNode(printType); 
-            
-            //printValue = document.createAttribute("value");  
-            //printValue.value = questions[questionNumber].choices[i].value;
-            //printInput.setAttributeNode(printValue);    
             
             printClass = document.createAttribute("class");
             printClass.value = "choices";
@@ -314,12 +311,6 @@ function printTheLabel(questions, questionNumber, i) {
             printLabel.setAttributeNode(printClass);
 
             contenedor.push(printLabel);  
-
-            // choicesDiv = document.getElementById("containerPack");
-            // printDiv = document.createElement("div"); 
-            // choicesDiv.appendChild(printDiv);
-        
-            
 }
 
 function printOneChoice(questions, questionNumber, i){        
@@ -350,12 +341,10 @@ function printQuestion(questions,questionNumber){
 }
 
 function printQandA(questions,questionNumber){
-    //erase();
+
     printQuestion(questions,questionNumber);
     printChoices(questions,questionNumber);
-    //htmlString += printQuestion(pregunta);
-    //htmlString += imprimeTodasLasRespuestas(pregunta)
-    //return htmlString;
+    
 }
 
 function erase(){
@@ -367,8 +356,8 @@ function erase(){
 
 function eraseQandA (contenedor){
     for (let i = 0; i < contenedor.length; i++) {
-        contenedor[i].remove()
-    }
+        contenedor[i].remove();
+    };
 }
 
 function resetGame(){
@@ -388,131 +377,123 @@ function changeButtonTextToFinish(){
     startButton.innerText = "Terminar";
 }
 
-// function appendGameInfo(questionNumber){
-//     gameInfo = document.createElement("p");
-//     gameInfo.innerText = "Pregunta " + questionNumber + "de " + numberOfQ.value;
-//     messages.appendChild(gameInfo);
-// }
-
 function getAnswerValue(){
     userAnswerValue = answerValue.value;
 }
 
 function validateAnswer(usersChoice){
-    
-    
-    
+        
     if (usersChoice == questions[questionNumber-1].answer){
         
-        //Respuesta correcta: la marca en verde      
-         
+        //Respuesta correcta: la marca en verde         
         printClass = document.createAttribute("class");
         printClass.value = "correctAnswer";
         inputTagToManage.setAttributeNode(printClass);
         inputTagToManage.classList.add("centered");
-
-        //paint = true;
         correctAnswerCounter++;
-        numberOfQuestionsAnswered++;  
-        //console.log("Respuesta correcta" + numberOfQuestionsAnswered);     
+        numberOfQuestionsAnswered++;     
     }
     else {
-        //Respuesta incorrecta: la marca en rojo
-        
+        //Respuesta incorrecta: la marca en rojo        
         printClass = document.createAttribute("class");
         printClass.value = "incorrectAnswer";
         inputTagToManage.setAttributeNode(printClass);
         inputTagToManage.classList.add("centered");
-        //paint = true;
-        numberOfQuestionsAnswered++; 
-        //console.log("Respuesta incorrecta" + numberOfQuestionsAnswered);     
-    }
-    
+        numberOfQuestionsAnswered++;      
+    };    
 }
 
 function printResults(){
     
-    questionsDiv = document.getElementById("questionPack");    
-
+    questionsDiv = document.getElementById("questionPack");
     gameInfo = document.createElement("legend");
-    gameInfo.innerText = "Haz conseguido " + correctAnswerCounter + " acierto(s) de un total de " + numberOfQ.value + " preguntas";
+    gameInfo.innerText = `Haz conseguido ${correctAnswerCounter} acierto(s) de un total de ${numberOfQ.value} preguntas`;
     questionsDiv.appendChild(gameInfo);    
-    
+   
+}
+if (resetButton) {
+    resetButton.addEventListener ("click", resetGame);
 }
 
-resetButton.addEventListener ("click", resetGame);
 
-startButton.addEventListener ("click", function() { 
-    if(numberOfQ.value == "" || numberOfQ.value <= 0){
-        resetGame();
-        alert("El número de preguntas debe ser mayor a 0");
-        youCanGo = false;
-    }
-
-    if(numberOfQ.value > questions.length){
-        resetGame();
-        alert("Tu solicitud supera el máximo de preguntas posibles");
-        youCanGo = false;
-    }
-
-    if (questionNumber < numberOfQ.value && youCanGo){
-        cleanScreen();
-        //erase();
-        eraseQandA (contenedor);
-        printQandA(questions, questionNumber);
-        questionNumber++;
-        changeButtonsText();       
-        if (questionNumber == numberOfQ.value && youCanGo){
-            changeButtonTextToFinish();
+if (startButton) {
+    startButton.addEventListener ("click", function() { 
+        if(numberOfQ.value == "" || numberOfQ.value <= 0){
+            resetGame();
+            alert("El número de preguntas debe ser mayor a 0");
+            youCanGo = false;
         }
-    }
-}); 
+    
+        if(numberOfQ.value > questions.length){
+            resetGame();
+            alert("Tu solicitud supera el máximo de preguntas posibles");
+            youCanGo = false;
+        }
+    
+        if (questionNumber < numberOfQ.value && youCanGo){
+            cleanScreen();
+            //erase();
+            eraseQandA (contenedor);
+            printQandA(questions, questionNumber);
+            questionNumber++;
+            paint = false;
+            changeButtonsText();       
+            if (questionNumber == numberOfQ.value && youCanGo){
+                changeButtonTextToFinish();
+            }
+        }
+    }); 
+}
 
 function removeButton(){
     startButton.classList.remove("welcomeButton");
     startButton.classList.add("displayNone");
 }
 
-startButton.addEventListener ("click", function(){
-    console.log("Número de preguntas respondidas" + numberOfQuestionsAnswered);
-    console.log("Número de preguntas solicitadas" + numberOfQ.value);
-    if (numberOfQuestionsAnswered == numberOfQ.value){ 
-        //Si el total de respuestas han sido respondias   
-        eraseQandA (contenedor);  
-        removeButton();   
-        printResults();
-    }
-});
-
-document
-    .getElementById("containerPack")
-    .addEventListener("click", () => {
-        const allTheChoices = document.getElementsByTagName("input");
-        const allTheLabelsChoices = document.getElementsByTagName("label");
-        let arrayChoices = Array.from(allTheChoices);
-        let arrayLabels = Array.from(allTheLabelsChoices);        
-          
-        for ( index = 0; index < arrayChoices.length; index++) {
-            if (arrayChoices[index].checked){
-                usersChoice = arrayChoices[index].id;
-                inputTagToManage = allTheLabelsChoices[index];  
-                console.log("ArrayChoices length: " + arrayChoices.length);
-                console.log("User choice: " + usersChoice);              
-                validateAnswer(usersChoice);                
-            };
+if (startButton) {
+    startButton.addEventListener ("click", function(){
+    
+        if (numberOfQuestionsAnswered == numberOfQ.value){ 
+            //Si el total de respuestas han sido respondias   
+            eraseQandA (contenedor);  
+            removeButton();   
+            printResults();
         }
-        
-        //Va a marcar la opción correcta
-        for ( index1 = 0; index1 < arrayLabels.length; index1++) {
-
-            if(allTheLabelsChoices[index1].getAttribute("for") == questions[questionNumber-1].answer){                
-                let theGoodAnswer = allTheLabelsChoices[index1];
-                printClass = document.createAttribute("class");
-                printClass.value = "correctAnswer"; 
-                theGoodAnswer.setAttributeNode(printClass);
-            }
-        
-        }
-
-            
     });
+}
+    
+let container = document.getElementById("containerPack")
+if (container) {
+    container.addEventListener("click", () => {
+        if(paint == false){
+            const allTheChoices = document.getElementsByTagName("input");
+            const allTheLabelsChoices = document.getElementsByTagName("label");
+            let arrayChoices = Array.from(allTheChoices);
+            let arrayLabels = Array.from(allTheLabelsChoices);        
+            
+            for ( index = 0; index < arrayChoices.length; index++) {
+                if (arrayChoices[index].checked){
+                    usersChoice = arrayChoices[index].id;
+                    inputTagToManage = allTheLabelsChoices[index];            
+                    validateAnswer(usersChoice);                
+                    paint = true;
+                    
+                };
+            }
+            
+            //Va a marcar la opción correcta
+            for ( index1 = 0; index1 < arrayLabels.length; index1++) {
+                
+                if(allTheLabelsChoices[index1].getAttribute("for") == questions[questionNumber-1].answer){                
+                    let theGoodAnswer = allTheLabelsChoices[index1];
+                    printClass = document.createAttribute("class");
+                    printClass.value = "correctAnswer"; 
+                    theGoodAnswer.setAttributeNode(printClass);
+                    theGoodAnswer.classList.add("centered");
+                }
+                
+            }
+            
+        }        
+    });
+}

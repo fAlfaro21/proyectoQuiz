@@ -8,6 +8,10 @@ body{
     color: #FFF;
 }
 
+nav{
+    margin-top: 250px;
+}
+
 .centered{
     text-align: center;
     margin-top: 10px;
@@ -32,11 +36,6 @@ body{
 }
 
 .choices {
-    /* visibility: hidden;
-    width: 0;
-    height: 0;
-    margin: 0; */
-
     appearance: auto;
     user-select: none;
     white-space: pre;
@@ -81,6 +80,7 @@ main{
 legend{
     text-align: center;
     height: 20vh;
+    margin-top: 25px;
 }
 
 .incorrectAnswer{
