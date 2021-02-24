@@ -268,6 +268,7 @@ let numberOfQuestionsAnswered = 0;
 let paint = false;
 let contenedor = [];
 let inputTagToManage;
+let emptyAnswer = true;
 
 function printTheInput(questions, questionNumber, i){
             choicesDiv = document.getElementById("containerPack");
@@ -430,13 +431,14 @@ if (startButton) {
             youCanGo = false;
         }
     
-        if (questionNumber < numberOfQ.value && youCanGo){
+        if (questionNumber < numberOfQ.value && youCanGo && emptyAnswer == true){
+            
             cleanScreen();
-            //erase();
             eraseQandA (contenedor);
             printQandA(questions, questionNumber);
             questionNumber++;
             paint = false;
+            emptyAnswer = false;
             changeButtonsText();       
             if (questionNumber == numberOfQ.value && youCanGo){
                 changeButtonTextToFinish();
@@ -477,7 +479,7 @@ if (container) {
                     inputTagToManage = allTheLabelsChoices[index];            
                     validateAnswer(usersChoice);                
                     paint = true;
-                    
+                    emptyAnswer = true;
                 };
             }
             
