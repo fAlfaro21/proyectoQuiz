@@ -6,10 +6,11 @@ body{
     flex-flow: column wrap;
     justify-content: center;
     color: #FFF;
+    height: 80vh;
 }
 
 nav{
-    margin-top: 250px;
+    margin-top: 170px;
 }
 
 .centered{
