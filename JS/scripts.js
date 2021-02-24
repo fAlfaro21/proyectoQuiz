@@ -265,9 +265,11 @@ let usersChoice = "";
 let index;
 let correctAnswerCounter = 0;
 let numberOfQuestionsAnswered = 0;
+let paint = false;
+let contenedor = [];
 
 function printTheInput(questions, questionNumber, i){
-            choicesDiv = document.getElementById("questionPack");
+            choicesDiv = document.getElementById("containerPack");
             printInput = document.createElement("input"); 
             printInput.innerText = questions[questionNumber].choices[i].id; 
             choicesDiv.appendChild(printInput); 
@@ -292,10 +294,12 @@ function printTheInput(questions, questionNumber, i){
             printClass = document.createAttribute("class");
             printClass.value = "choices";
             printInput.setAttributeNode(printClass);
+
+            contenedor.push(printInput);  
      }
 
 function printTheLabel(questions, questionNumber, i) {
-            choicesDiv = document.getElementById("questionPack");
+            choicesDiv = document.getElementById("containerPack");
             printLabel = document.createElement("label"); 
             printLabel.innerText = questions[questionNumber].choices[i].label;
             choicesDiv.appendChild(printLabel);                         
@@ -303,15 +307,19 @@ function printTheLabel(questions, questionNumber, i) {
             getLabel = document.getElementsByTagName("label")[i]; 
             printFor = document.createAttribute("for");  
             printFor.value = questions[questionNumber].choices[i].id; 
-            printLabel.setAttributeNode(printFor);   
+            printLabel.setAttributeNode(printFor); 
 
-            // choicesDiv = document.getElementById("questionPack");
+            printClass = document.createAttribute("class");
+            printClass.value = "centered";
+            printLabel.setAttributeNode(printClass);
+
+            contenedor.push(printLabel);  
+
+            // choicesDiv = document.getElementById("containerPack");
             // printDiv = document.createElement("div"); 
             // choicesDiv.appendChild(printDiv);
         
-            //printClass = document.createAttribute("class");
-            // printClass.value = "choicesPack";
-            // printDiv.setAttributeNode(printClass);
+            
 }
 
 function printOneChoice(questions, questionNumber, i){        
@@ -327,7 +335,7 @@ function printChoices(questions,questionNumber){
 }
 
 function printQuestion(questions,questionNumber){
-    questionsDiv = document.getElementById("questionPack");    
+    questionsDiv = document.getElementById("containerPack");    
 
     gameInfo = document.createElement("legend");
     gameInfo.innerText = "Pregunta " + (questionNumber+1) + " de " + numberOfQ.value;
@@ -335,15 +343,32 @@ function printQuestion(questions,questionNumber){
 
     title = document.createElement("legend");    
     title.innerText = questions[questionNumber].title;       
-    questionsDiv.appendChild(title);                     
+    questionsDiv.appendChild(title);       
+    
+    contenedor.push(gameInfo);
+    contenedor.push(title);
 }
 
 function printQandA(questions,questionNumber){
+    //erase();
     printQuestion(questions,questionNumber);
     printChoices(questions,questionNumber);
     //htmlString += printQuestion(pregunta);
     //htmlString += imprimeTodasLasRespuestas(pregunta)
     //return htmlString;
+}
+
+function erase(){
+    const container = document.getElementById("containerPack");
+    if (container !== ""){
+        container.remove();
+    };
+}
+
+function eraseQandA (contenedor){
+    for (let i = 0; i < contenedor.length; i++) {
+        contenedor[i].remove()
+    }
 }
 
 function resetGame(){
@@ -375,28 +400,34 @@ function getAnswerValue(){
 
 function validateAnswer(usersChoice){
     
-    //console.log("User choice: " + usersChoice);
-    //console.log("Index: " + index);
-    //console.log("Respuesta correcta: " + questions[questionNumber-1].answer);
-    //console.log("Número de pregunta actual: " + questionNumber);
+    
+    
     if (usersChoice == questions[questionNumber-1].answer){
-        //Respuesta correcta: la marca en verde        
         
+        //Respuesta correcta: la marca en verde      
+         
         printClass = document.createAttribute("class");
         printClass.value = "correctAnswer";
         inputTagToManage.setAttributeNode(printClass);
+        inputTagToManage.classList.add("centered");
 
-        correctAnswerCounter++
-        numberOfQuestionsAnswered++
+        //paint = true;
+        correctAnswerCounter++;
+        numberOfQuestionsAnswered++;  
+        //console.log("Respuesta correcta" + numberOfQuestionsAnswered);     
     }
     else {
         //Respuesta incorrecta: la marca en rojo
+        
         printClass = document.createAttribute("class");
         printClass.value = "incorrectAnswer";
         inputTagToManage.setAttributeNode(printClass);
-
-        numberOfQuestionsAnswered++
+        inputTagToManage.classList.add("centered");
+        //paint = true;
+        numberOfQuestionsAnswered++; 
+        //console.log("Respuesta incorrecta" + numberOfQuestionsAnswered);     
     }
+    
 }
 
 function printResults(){
@@ -426,6 +457,8 @@ startButton.addEventListener ("click", function() {
 
     if (questionNumber < numberOfQ.value && youCanGo){
         cleanScreen();
+        //erase();
+        eraseQandA (contenedor);
         printQandA(questions, questionNumber);
         questionNumber++;
         changeButtonsText();       
@@ -435,44 +468,50 @@ startButton.addEventListener ("click", function() {
     }
 }); 
 
+function removeButton(){
+    startButton.classList.remove("welcomeButton");
+    startButton.classList.add("displayNone");
+}
+
 startButton.addEventListener ("click", function(){
-     
+    console.log("Número de preguntas respondidas" + numberOfQuestionsAnswered);
+    console.log("Número de preguntas solicitadas" + numberOfQ.value);
     if (numberOfQuestionsAnswered == numberOfQ.value){ 
-        //Si el total de respuestas han sido respondias
+        //Si el total de respuestas han sido respondias   
+        eraseQandA (contenedor);  
+        removeButton();   
         printResults();
     }
 });
 
 document
-    .getElementById("questionPack")
+    .getElementById("containerPack")
     .addEventListener("click", () => {
         const allTheChoices = document.getElementsByTagName("input");
         const allTheLabelsChoices = document.getElementsByTagName("label");
         let arrayChoices = Array.from(allTheChoices);
-        let arrayLabels = Array.from(allTheLabelsChoices);
-
+        let arrayLabels = Array.from(allTheLabelsChoices);        
+          
         for ( index = 0; index < arrayChoices.length; index++) {
-
             if (arrayChoices[index].checked){
                 usersChoice = arrayChoices[index].id;
-                inputTagToManage = allTheLabelsChoices[index];
-                validateAnswer(usersChoice);
+                inputTagToManage = allTheLabelsChoices[index];  
+                console.log("ArrayChoices length: " + arrayChoices.length);
+                console.log("User choice: " + usersChoice);              
+                validateAnswer(usersChoice);                
             };
         }
         
         //Va a marcar la opción correcta
-
         for ( index1 = 0; index1 < arrayLabels.length; index1++) {
-            //console.log("ArrayLabelLength: " + arrayLabels.length);
-            //console.log("for: " + allTheLabelsChoices[index1].getAttribute("for"));
-            //console.log("Correct answer: " + questions[questionNumber-1].answer);
+
             if(allTheLabelsChoices[index1].getAttribute("for") == questions[questionNumber-1].answer){                
                 let theGoodAnswer = allTheLabelsChoices[index1];
                 printClass = document.createAttribute("class");
                 printClass.value = "correctAnswer"; 
                 theGoodAnswer.setAttributeNode(printClass);
             }
-        //}
+        
         }
 
             
