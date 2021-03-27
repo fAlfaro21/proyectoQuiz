@@ -9,6 +9,10 @@ body{
     height: 80vh;
 }
 
+body.div{
+    display: none;
+}
+
 nav{
     margin-top: 170px;
 }
