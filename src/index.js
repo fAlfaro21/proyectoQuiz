@@ -25,7 +25,7 @@ app.use(
 );
 
 // Aquí el middleware donde se cargará la ruta principal
-app.use('/users', routeMiddleware);
+app.use('/quiz', routeMiddleware);
 
 const PORT = 4000;
 app.listen(PORT, () => console.info(`> listening at http://localhost:${PORT}`));

@@ -4,7 +4,7 @@ const express = require("express");
 const mongoose = require('mongoose');
 //const dotenv = require ('dotenv').config();
 
-const DB_URI = 'mongodb://localhost:27017/questions';
+const DB_URI = 'mongodb://localhost:27017/quiz';
 
 mongoose
   .connect(DB_URI, {
