@@ -4,7 +4,7 @@ const user = require('../models/User');
 const cryptoRandomString = require('crypto-random-string');
 const jwt = require('jsonwebtoken'); //HMAC SHA256
 const { requireEmailAndPassword } = require('../middlewares/requiredFields');
-const { ok } = require('node:assert');
+//const { ok } = require('node:assert');
 
 // Endpoints relativos a Users
 
@@ -67,7 +67,7 @@ route.get('/logout', (req, res, next) => {
       const newToken = headerAuthorization.split(" ");
       const tokenDecoded = jwt.decode(newToken[1]); //  { user: 'usuario33', exp: 1616514528, iat: 1616510928 }
 
-      const userData = await User.findOneAndUpdate({email:tokenDecoded.user},{$set:{"secret":newSecret}});
+      const userData = User.findOneAndUpdate({email:tokenDecoded.user},{$set:{"secret":newSecret}});
 
     res.status(200).json({
       Message: "Secreto modificado",
