@@ -74,7 +74,7 @@ const questions = [
             id: "tierraAguaAire",
             name: "choice",
             value: "tierraAguaAire",
-        }        
+        }
     ],
     answer: "tierraAguaAire"},
     {title: '¿Cómo consiguen comunicarse entre ellas con tanta eficiencia?',
@@ -251,10 +251,14 @@ const questions = [
     answer: "coloniaDesaparece"}
 ]
 
-const startButton = document.getElementById("startButton"); 
-const resetButton = document.getElementById("resetButton"); 
+const startButton = document.getElementById("startButton");
+const resetButton = document.getElementById("resetButton");
 const numberOfQ = document.getElementById("numberOfQ");
 const homePage = document.getElementById("homePage");
+const signInButton = document.getElementById("signInButton");
+const userEmail = document.getElementById("userEmail");
+const userPass = document.getElementById("userPass");
+
 
 let questionNumber = 0;
 let i;
@@ -272,71 +276,71 @@ let emptyAnswer = true;
 
 function printTheInput(questions, questionNumber, i){
             choicesDiv = document.getElementById("containerPack");
-            printInput = document.createElement("input"); 
-            printInput.innerText = questions[questionNumber].choices[i].id; 
-            choicesDiv.appendChild(printInput); 
+            printInput = document.createElement("input");
+            printInput.innerText = questions[questionNumber].choices[i].id;
+            choicesDiv.appendChild(printInput);
 
-            getInput = document.getElementsByTagName("Input")[i];            
-            printId = document.createAttribute("id");  
-            printId.value = questions[questionNumber].choices[i].id;            
-            printInput.setAttributeNode(printId);  
-            
-            printName = document.createAttribute("name");  
-            printName.value = questions[questionNumber].choices[i].name;            
-            printInput.setAttributeNode(printName); 
-            
-            printType = document.createAttribute("type"); 
-            printType.value = "radio"; 
-            printInput.setAttributeNode(printType); 
-            
+            getInput = document.getElementsByTagName("Input")[i];
+            printId = document.createAttribute("id");
+            printId.value = questions[questionNumber].choices[i].id;
+            printInput.setAttributeNode(printId);
+
+            printName = document.createAttribute("name");
+            printName.value = questions[questionNumber].choices[i].name;
+            printInput.setAttributeNode(printName);
+
+            printType = document.createAttribute("type");
+            printType.value = "radio";
+            printInput.setAttributeNode(printType);
+
             printClass = document.createAttribute("class");
             printClass.value = "choices";
             printInput.setAttributeNode(printClass);
 
-            contenedor.push(printInput);  
+            contenedor.push(printInput);
      }
 
 function printTheLabel(questions, questionNumber, i) {
             choicesDiv = document.getElementById("containerPack");
-            printLabel = document.createElement("label"); 
+            printLabel = document.createElement("label");
             printLabel.innerText = questions[questionNumber].choices[i].label;
-            choicesDiv.appendChild(printLabel);                         
+            choicesDiv.appendChild(printLabel);
 
-            getLabel = document.getElementsByTagName("label")[i]; 
-            printFor = document.createAttribute("for");  
-            printFor.value = questions[questionNumber].choices[i].id; 
-            printLabel.setAttributeNode(printFor); 
+            getLabel = document.getElementsByTagName("label")[i];
+            printFor = document.createAttribute("for");
+            printFor.value = questions[questionNumber].choices[i].id;
+            printLabel.setAttributeNode(printFor);
 
             printClass = document.createAttribute("class");
             printClass.value = "centered";
             printLabel.setAttributeNode(printClass);
 
-            contenedor.push(printLabel);  
+            contenedor.push(printLabel);
 }
 
-function printOneChoice(questions, questionNumber, i){        
+function printOneChoice(questions, questionNumber, i){
         printTheLabel(questions, questionNumber, i);
-        printTheInput(questions, questionNumber, i);    
+        printTheInput(questions, questionNumber, i);
 }
 
 function printChoices(questions,questionNumber){
-    
-    for(i=0; i<questions[questionNumber].choices.length; i++){ 
+
+    for(i=0; i<questions[questionNumber].choices.length; i++){
         printOneChoice(questions, questionNumber, i);
-    }    
+    }
 }
 
 function printQuestion(questions,questionNumber){
-    questionsDiv = document.getElementById("containerPack");    
+    questionsDiv = document.getElementById("containerPack");
 
     gameInfo = document.createElement("legend");
     gameInfo.innerText = "Pregunta " + (questionNumber+1) + " de " + numberOfQ.value;
     questionsDiv.appendChild(gameInfo);
 
-    title = document.createElement("legend");    
-    title.innerText = questions[questionNumber].title;       
-    questionsDiv.appendChild(title);       
-    
+    title = document.createElement("legend");
+    title.innerText = questions[questionNumber].title;
+    questionsDiv.appendChild(title);
+
     contenedor.push(gameInfo);
     contenedor.push(title);
 }
@@ -345,7 +349,7 @@ function printQandA(questions,questionNumber){
 
     printQuestion(questions,questionNumber);
     printChoices(questions,questionNumber);
-    
+
 }
 
 function erase(){
@@ -383,34 +387,34 @@ function getAnswerValue(){
 }
 
 function validateAnswer(usersChoice){
-        
+
     if (usersChoice == questions[questionNumber-1].answer){
-        
-        //Respuesta correcta: la marca en verde         
+
+        //Respuesta correcta: la marca en verde
         printClass = document.createAttribute("class");
         printClass.value = "correctAnswer";
         inputTagToManage.setAttributeNode(printClass);
         inputTagToManage.classList.add("centered");
         correctAnswerCounter++;
-        numberOfQuestionsAnswered++;     
+        numberOfQuestionsAnswered++;
     }
     else {
-        //Respuesta incorrecta: la marca en rojo        
+        //Respuesta incorrecta: la marca en rojo
         printClass = document.createAttribute("class");
         printClass.value = "incorrectAnswer";
         inputTagToManage.setAttributeNode(printClass);
         inputTagToManage.classList.add("centered");
-        numberOfQuestionsAnswered++;      
-    };    
+        numberOfQuestionsAnswered++;
+    };
 }
 
 function printResults(){
-    
+
     questionsDiv = document.getElementById("questionPack");
     gameInfo = document.createElement("legend");
     gameInfo.innerText = `Haz conseguido ${correctAnswerCounter} acierto(s) de un total de ${numberOfQ.value} preguntas`;
-    questionsDiv.appendChild(gameInfo);    
-   
+    questionsDiv.appendChild(gameInfo);
+
 }
 if (resetButton) {
     resetButton.addEventListener ("click", resetGame);
@@ -418,33 +422,33 @@ if (resetButton) {
 
 
 if (startButton) {
-    startButton.addEventListener ("click", function() { 
+    startButton.addEventListener ("click", function() {
         if(numberOfQ.value == "" || numberOfQ.value <= 0){
             resetGame();
             alert("El número de preguntas debe ser mayor a 0");
             youCanGo = false;
         }
-    
+
         if(numberOfQ.value > questions.length){
             resetGame();
             alert("Tu solicitud supera el máximo de preguntas posibles");
             youCanGo = false;
         }
-    
+
         if (questionNumber < numberOfQ.value && youCanGo && emptyAnswer == true){
-            
+
             cleanScreen();
             eraseQandA (contenedor);
             printQandA(questions, questionNumber);
             questionNumber++;
             paint = false;
             emptyAnswer = false;
-            changeButtonsText();       
+            changeButtonsText();
             if (questionNumber == numberOfQ.value && youCanGo){
                 changeButtonTextToFinish();
             }
         }
-    }); 
+    });
 }
 
 function removeButton(){
@@ -452,18 +456,44 @@ function removeButton(){
     startButton.classList.add("displayNone");
 }
 
+function signIn() {
+    const options = {
+      method: 'GET',
+      //params: JSON.stringify({email: userEmail.value}), 
+      //body: JSON.stringify({email: userEmail.value, pass:userPass.value }),
+      headers:{'Content-Type': 'application/json'}
+    }
+    console.log(options);
+    fetch(`/login/${userEmail.value}`, options)
+        .then(response => {
+            if (response.status === 200) {
+                alert("Bienvenido")
+                setTimeout(function(){
+                    window.location.href = "http://localhost:8080/home.html"
+                }, 1000);
+                window.localStorage.setItem(userEmail.value, JSON.stringify(response.data));
+            }
+            else if (response.status === 400) {
+                setTimeout(function(){
+                    window.location.href = "http://localhost:8080/signup.html"
+                }, 1000);
+            }
+        })
+        .catch(err => console.log(err))
+  }
+
 if (startButton) {
     startButton.addEventListener ("click", function(){
-    
-        if (numberOfQuestionsAnswered == numberOfQ.value){ 
-            //Si el total de respuestas han sido respondias   
-            eraseQandA (contenedor);  
-            removeButton();   
+
+        if (numberOfQuestionsAnswered == numberOfQ.value){
+            //Si el total de respuestas han sido respondias
+            eraseQandA (contenedor);
+            removeButton();
             printResults();
         }
     });
 }
-    
+
 let container = document.getElementById("containerPack")
 if (container) {
     container.addEventListener("click", () => {
@@ -471,31 +501,44 @@ if (container) {
             const allTheChoices = document.getElementsByTagName("input");
             const allTheLabelsChoices = document.getElementsByTagName("label");
             let arrayChoices = Array.from(allTheChoices);
-            let arrayLabels = Array.from(allTheLabelsChoices);        
-            
+            let arrayLabels = Array.from(allTheLabelsChoices);
+
             for ( index = 0; index < arrayChoices.length; index++) {
                 if (arrayChoices[index].checked){
                     usersChoice = arrayChoices[index].id;
-                    inputTagToManage = allTheLabelsChoices[index];            
-                    validateAnswer(usersChoice);                
+                    inputTagToManage = allTheLabelsChoices[index];
+                    validateAnswer(usersChoice);
                     paint = true;
                     emptyAnswer = true;
                 };
             }
-            
+
             //Va a marcar la opción correcta
             for ( index1 = 0; index1 < arrayLabels.length; index1++) {
-                
-                if(allTheLabelsChoices[index1].getAttribute("for") == questions[questionNumber-1].answer){                
+
+                if(allTheLabelsChoices[index1].getAttribute("for") == questions[questionNumber-1].answer){
                     let theGoodAnswer = allTheLabelsChoices[index1];
                     printClass = document.createAttribute("class");
-                    printClass.value = "correctAnswer"; 
+                    printClass.value = "correctAnswer";
                     theGoodAnswer.setAttributeNode(printClass);
                     theGoodAnswer.classList.add("centered");
                 }
-                
+
             }
-            
-        }        
+
+        }
+    });
+}
+//--------------------------------------------------------------
+
+if(signInButton){
+    signInButton.addEventListener('click', () => {
+        if(userEmail.value == "" || userPass.value == ""){
+            resetGame();
+            alert("El email y la contraseña son requeridos");
+        } 
+        else {
+            signIn();
+        }
     });
 }

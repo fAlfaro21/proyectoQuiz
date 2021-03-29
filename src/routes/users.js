@@ -8,14 +8,11 @@ const { requireEmailAndPassword } = require('../middlewares/requiredFields');
 
 // Endpoints relativos a Users
 
-route.post('/register', [requireEmailAndPassword], (req, res, next) => {
+route.post('/register', [requireEmailAndPassword], (req, res) => {
     const email = req.body.email;
     const pass = md5(req.body.pass);
-    const secret = cryptoRandomString({length: 10, type: 'base64'});
-    const payload = {
-        "user": email,
-        //"exp": Math.floor(Date.now() / 1000) + (60 * 60),
-        } 
+    const payload = { "user": email }; 
+    const secret = cryptoRandomString({length: 10, type: 'base64'}); 
     const token = jwt.sign(payload, secret);
     try{      
         const newUser = new model({email, pass, secret});
@@ -29,26 +26,36 @@ route.post('/register', [requireEmailAndPassword], (req, res, next) => {
         }
         catch(err) {
             console.log(err);
-            return res.status(500).json({
+            return res.status(400).json({
             ok: false,
             data: err.message,
             });
         }
 });
 
-route.get('/login', [requireEmailAndPassword], (req, res, next) => {
-    const email = req.body.email;
+route.get('/login/:email', (req, res) => {
+    const email = req.params.email;    
+    const payload = { "user": email }; 
+    const secret = cryptoRandomString({length: 10, type: 'base64'});
     try {
-        const userData = User.find({email:email});      
+        const userData = User.findOne({email:email});      
         //Si existe la info del usuario, crea un token  
-        if (userData.length > 0){   
-            const token = jwt.sign(payload, secret);  
-                
-        res.status(200).json({
-          message: "Se ha generado un token",
-          data: token,
-          ok: true,
-        })};
+        //if (userData.length > 0){   
+          //  const token = jwt.sign(payload, secret);  
+        //};            
+        if (userData != null) {
+            res.status(200).json({
+              message: "Lectura correcta",
+              data: jwt.sign(payload, secret),
+              ok: true,
+            })  
+        }
+        else if (userData === null) {
+            res.status(400).json({
+            data: err.message,
+            ok: false,
+            })
+        }
       }
         catch (err) {
           console.log(err);
@@ -59,7 +66,7 @@ route.get('/login', [requireEmailAndPassword], (req, res, next) => {
       }
 });
 
-route.get('/logout', (req, res, next) => {
+route.get('/logout', (req, res) => {
     const newSecret = cryptoRandomString({length: 10, type: 'base64'});
   try {
     if (req.headers.authorization.length > 0){

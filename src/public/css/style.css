@@ -96,6 +96,14 @@ legend{
     border: solid greenyellow;
 }
 
+form input.error {
+    border-color: #e74c3c
+}
+
+form input.success {
+    border-color: #c3e6cb
+}
+
 /* ------------ RESPONSIVE --------------*/
 /* ------------ 768 o menos ------------ */
 .wrapper {

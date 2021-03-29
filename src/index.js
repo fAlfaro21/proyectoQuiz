@@ -2,7 +2,6 @@ const express = require('express');
 const session = require('express-session');
 //const MongoStore = require('connect-mongo')(session);
 
-
 const mongoose = require('./configs/db');
 const routeMiddleware = require('./routes');
 
@@ -23,7 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 //     }),
 //   })
 // );
-
+app.use('/login', express.static('./public'));
 // Aquí el middleware donde se cargará la ruta principal
 app.use('/quiz', routeMiddleware);
 
