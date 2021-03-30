@@ -258,7 +258,7 @@ const homePage = document.getElementById("homePage");
 const signInButton = document.getElementById("signInButton");
 const userEmail = document.getElementById("userEmail");
 const userPass = document.getElementById("userPass");
-
+const signUpButton = document.getElementById("signUpButton");
 
 let questionNumber = 0;
 let i;
@@ -456,6 +456,34 @@ function removeButton(){
     startButton.classList.add("displayNone");
 }
 
+function signUp() {
+    const options = {
+      method: 'POST',
+      body: JSON.stringify({email:userEmail.value, pass: userPass.value}),
+      headers:{'Content-Type': 'application/json'}
+    }
+    
+    fetch(`quiz/users/register`, options)
+        .then(response => {
+            console.log(response);
+            if (response.status === 200) {
+                alert("Bienvenido")
+                setTimeout(function(){
+                    window.location.href = "http://localhost:4000/home.html"
+                }, 1000);
+                window.localStorage.setItem(userEmail.value, JSON.stringify(response.data));
+            }
+            else if (response.status === 400) {
+                console.log(`response: ${JSON.stringify(response)}`);
+                alert("Error en registro. Contacte con el administrador de la aplicación")
+                setTimeout(function(){
+                    window.location.href = "http://localhost:4000/index.html"
+                }, 1000);
+            }
+        })
+        .catch(err => console.log(err))
+  }
+
 function signIn() {
     const options = {
       method: 'GET',
@@ -476,7 +504,7 @@ function signIn() {
                 console.log(`response: ${JSON.stringify(response)}`);
                 setTimeout(function(){
                     window.location.href = "http://localhost:4000/signup.html"
-                }, 6000);
+                }, 1000);
             }
         })
         .catch(err => console.log(err))
@@ -530,12 +558,27 @@ if (container) {
     });
 }
 //--------------------------------------------------------------
+if(signUpButton){
+    signUpButton.addEventListener('click', () => {
+        if(userEmail.value == "" || userPass.value == ""){
+            resetGame();
+            setTimeout(function(){
+                alert("El email y la contraseña son requeridos");
+            }, 1000);            
+        } 
+        else {
+            signUp();
+        }
+    });
+}
 
 if(signInButton){
     signInButton.addEventListener('click', () => {
         if(userEmail.value == "" || userPass.value == ""){
             resetGame();
-            alert("El email y la contraseña son requeridos");
+            setTimeout(function(){
+                alert("El email y la contraseña son requeridos");
+            }, 1000);            
         } 
         else {
             signIn();

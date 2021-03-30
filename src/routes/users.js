@@ -3,18 +3,19 @@ const md5 = require("md5");
 const User = require('../models/User');
 const cryptoRandomString = require('crypto-random-string');
 const jwt = require('jsonwebtoken'); //HMAC SHA256
-const { requireEmailAndPassword } = require('../middlewares/requiredFields');
 
 // Endpoints relativos a Users
 
-route.post('/register', [requireEmailAndPassword], (req, res) => {
-    const email = req.body.email;
-    const pass = md5(req.body.pass);
-    const payload = { "user": email }; 
-    const secret = cryptoRandomString({length: 10, type: 'base64'}); 
-    const token = jwt.sign(payload, secret);
-    try{      
-        const newUser = new model({email, pass, secret});
+route.post('/register', (req, res) => {  
+    
+  const email = req.body.email;
+  const pass =  req.body.pass;
+  const payload = { "user": email }; 
+  const secret = cryptoRandomString({length: 10, type: 'base64'}); 
+  const token = jwt.sign(payload, secret);
+  
+  try{      
+        const newUser = new User({email: email, password: pass, secret: secret});
         const userData = newUser.save();
     
         return res.status(200).json({
@@ -53,7 +54,6 @@ route.get('/login/:email', (req, res) => {
         // }
 
         const userData = User.findOne({email:email}, (err, user)=>{
-          console.log(`user: ${user}`);
           if (user != null){
                 res.status(200).json({
                   message: "Lectura correcta",
