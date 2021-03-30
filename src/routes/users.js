@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken'); //HMAC SHA256
 route.post('/register', (req, res) => {  
     
   const email = req.body.email;
-  const pass =  req.body.pass;
+  const pass =  md5(req.body.pass);
   const payload = { "user": email }; 
   const secret = cryptoRandomString({length: 10, type: 'base64'}); 
   const token = jwt.sign(payload, secret);
@@ -22,6 +22,7 @@ route.post('/register', (req, res) => {
             message: "Creación de usuario correcta",
             result: userData.email,
             data: token,
+            status: 200,
         });
         }
         catch(err) {
@@ -29,6 +30,7 @@ route.post('/register', (req, res) => {
             return res.status(400).json({
             ok: false,
             data: err.message,
+            status: 400,
             });
         }
 });

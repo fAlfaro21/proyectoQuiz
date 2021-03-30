@@ -464,22 +464,22 @@ function signUp() {
     }
     
     fetch(`quiz/users/register`, options)
-        .then(response => {
-            console.log(response);
-            if (response.status === 200) {
-                alert("Bienvenido")
+        .then(response => response.json())
+        .then(data => {          
+            const registerData = JSON.stringify(data);            
+            if (data.status === 200) {
+                alert("Bienvenido");
                 setTimeout(function(){
                     window.location.href = "http://localhost:4000/home.html"
                 }, 1000);
-                window.localStorage.setItem(userEmail.value, JSON.stringify(response.data));
+                window.localStorage.setItem(userEmail.value, JSON.stringify(data.data));
             }
-            else if (response.status === 400) {
-                console.log(`response: ${JSON.stringify(response)}`);
-                alert("Error en registro. Contacte con el administrador de la aplicación")
+            else if (data.status === 400) {
+                alert("Error en registro. Contacte con el administrador de la aplicación");
                 setTimeout(function(){
                     window.location.href = "http://localhost:4000/index.html"
                 }, 1000);
-            }
+            }            
         })
         .catch(err => console.log(err))
   }
