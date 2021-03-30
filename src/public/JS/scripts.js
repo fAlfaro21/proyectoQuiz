@@ -459,24 +459,24 @@ function removeButton(){
 function signIn() {
     const options = {
       method: 'GET',
-      //params: JSON.stringify({email: userEmail.value}), 
-      //body: JSON.stringify({email: userEmail.value, pass:userPass.value }),
       headers:{'Content-Type': 'application/json'}
     }
-    console.log(options);
-    fetch(`/login/${userEmail.value}`, options)
+    
+    fetch(`quiz/users/login/${userEmail.value}`, options)
         .then(response => {
+            console.log(response);
             if (response.status === 200) {
                 alert("Bienvenido")
                 setTimeout(function(){
-                    window.location.href = "http://localhost:8080/home.html"
+                    window.location.href = "http://localhost:4000/home.html"
                 }, 1000);
                 window.localStorage.setItem(userEmail.value, JSON.stringify(response.data));
             }
             else if (response.status === 400) {
+                console.log(`response: ${JSON.stringify(response)}`);
                 setTimeout(function(){
-                    window.location.href = "http://localhost:8080/signup.html"
-                }, 1000);
+                    window.location.href = "http://localhost:4000/signup.html"
+                }, 6000);
             }
         })
         .catch(err => console.log(err))

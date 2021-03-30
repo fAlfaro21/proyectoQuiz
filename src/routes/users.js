@@ -1,10 +1,9 @@
 const route = require('express').Router();
 const md5 = require("md5");
-const user = require('../models/User');
+const User = require('../models/User');
 const cryptoRandomString = require('crypto-random-string');
 const jwt = require('jsonwebtoken'); //HMAC SHA256
 const { requireEmailAndPassword } = require('../middlewares/requiredFields');
-//const { ok } = require('node:assert');
 
 // Endpoints relativos a Users
 
@@ -34,33 +33,46 @@ route.post('/register', [requireEmailAndPassword], (req, res) => {
 });
 
 route.get('/login/:email', (req, res) => {
-    const email = req.params.email;    
+    const email = req.params.email;  
     const payload = { "user": email }; 
     const secret = cryptoRandomString({length: 10, type: 'base64'});
     try {
-        const userData = User.findOne({email:email});      
-        //Si existe la info del usuario, crea un token  
-        //if (userData.length > 0){   
-          //  const token = jwt.sign(payload, secret);  
-        //};            
-        if (userData != null) {
-            res.status(200).json({
-              message: "Lectura correcta",
-              data: jwt.sign(payload, secret),
-              ok: true,
-            })  
-        }
-        else if (userData === null) {
-            res.status(400).json({
-            data: err.message,
-            ok: false,
-            })
-        }
+        // const userData = User.findOne({email:email});      
+          
+        // if (userData === null) {
+        //     res.status(200).json({
+        //       message: "Lectura correcta",
+        //       data: jwt.sign(payload, secret),
+        //       ok: true,
+        //     })  
+        // }
+        // else if (userData != null) {
+        //     res.status(400).json({
+        //     ok: false,
+        //     })
+        // }
+
+        const userData = User.findOne({email:email}, (err, user)=>{
+          console.log(`user: ${user}`);
+          if (user != null){
+                res.status(200).json({
+                  message: "Lectura correcta",
+                  data: jwt.sign(payload, secret),
+                  ok: true,
+                })  
+          }
+          else if (user == null) {
+                res.status(400).json({
+                message: console.error(),
+                ok: false,
+                })
+          }
+        })
       }
         catch (err) {
           console.log(err);
           res.status(500).json({
-            data: err.message,
+            
             ok: false,
         });
       }
