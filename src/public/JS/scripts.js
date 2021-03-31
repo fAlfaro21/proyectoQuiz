@@ -467,11 +467,19 @@ function signOut() {
     //console.log(`localStorageId: ${localStorageId}`);
     //console.log(`userId: ${userId}`);
     fetch(`quiz/users/logout/${localStorageId}`, options)
+
+        // .then(response => response.json())
+        // .then(data => {                      
+        //     if (data.status === 200){
+        //         alert("Adiós");
+        //         window.location.href = data.url;
+        //     }
+        // })
+    
         .then(response => {
             if (response.status === 200) {
                 alert("Adiós");
-                userId = "";
-                resetGame();
+                window.location.href = "http://localhost:4000/index.html"
             }
         })
         .catch(err => console.log(err))

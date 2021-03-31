@@ -84,20 +84,20 @@ route.get('/login/:email', (req, res) => {
 
 route.get('/logout/:localSotrageId', async (req, res) => {
     const localSotrageId = req.params.localSotrageId;
-    console.log(`localSotrageId: ${localSotrageId}`);
     const newSecret = cryptoRandomString({length: 10, type: 'base64'});
   try {
     if (localSotrageId != ""){
       const tokenDecoded = jwt.decode(localSotrageId); 
-      const userData = await User.findOneAndUpdate({email: tokenDecoded.user},{$set:{"secret":newSecret}});
-
-      res.status(200).json({
-        Message: "Secreto modificado",
-        User: userData,
-        NewUser: newSecret,
-        Ok: true,
-        data: "ok",
-      });
+      const userData = await User.findOneAndUpdate({email: tokenDecoded.user},{$set:{"secret":newSecret}})
+        
+        res.status(200).json({
+          Message: "Secreto modificado",
+          User: userData,
+          NewUser: newSecret,
+          Ok: true,
+          data: "ok",
+          url: "http://localhost:4000/index.html",
+        });
   };
   } catch (err) {
     console.log(err);

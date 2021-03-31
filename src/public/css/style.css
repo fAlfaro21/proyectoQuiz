@@ -13,6 +13,15 @@ body.div{
     display: none;
 }
 
+body.signIn, body.signUp{
+    display: flex;
+    align-items: center;
+}
+
+.signIn{
+    justify-content: center;
+}
+
 nav{
     margin-top: 170px;
 }
