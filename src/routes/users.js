@@ -38,28 +38,12 @@ route.post('/register', (req, res) => {
 route.get('/login/:email', (req, res) => {
     const email = req.params.email;  
     const payload = { "user": email }; 
-    const secret = cryptoRandomString({length: 10, type: 'base64'});
     try {
-        // const userData = User.findOne({email:email});      
-          
-        // if (userData === null) {
-        //     res.status(200).json({
-        //       message: "Lectura correcta",
-        //       data: jwt.sign(payload, secret),
-        //       ok: true,
-        //     })  
-        // }
-        // else if (userData != null) {
-        //     res.status(400).json({
-        //     ok: false,
-        //     })
-        // }
-
         const userData = User.findOne({email:email}, (err, user)=>{
           if (user != null){
                 res.status(200).json({
                   message: "Lectura correcta",
-                  data: jwt.sign(payload, secret),
+                  data: jwt.sign(payload, user.secret),
                   status: 200,
                   ok: true,
                 })  
@@ -106,6 +90,30 @@ route.get('/logout/:localSotrageId', async (req, res) => {
       Ok: false,
     });
   }
+});
+
+route.get('/authentication/:localSotrageId', async (req, res) => {
+  const localSotrageId = req.params.localSotrageId;
+try {
+  if (localSotrageId != ""){
+    const tokenDecoded = jwt.decode(localSotrageId); 
+    const userData = await User.findOne({email: tokenDecoded.user});
+    const tokenVerified = JSON.stringify (jwt.verify(localSotrageId, userData.secret));  
+      res.status(200).json({
+        Data: userData,
+        Ok: true,
+        Token: localSotrageId,
+        status: 200,
+      });
+};
+} catch (err) {
+  console.log(err);
+  res.status(400).json({
+    Message: "Token desconocido o inválido",
+    Ok: false,
+    status: 200,
+  });
+}
 });
 
 module.exports = route;

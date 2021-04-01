@@ -13,12 +13,17 @@ body.div{
     display: none;
 }
 
-body.signIn, body.signUp{
+body.signIn, body.signUp, body.signOut{
     display: flex;
     align-items: center;
 }
 
-.signIn{
+body.questions{
+    display: flex;
+    align-items: center;
+}
+
+.signIn {
     justify-content: center;
 }
 

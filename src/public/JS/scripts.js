@@ -260,6 +260,7 @@ const userEmail = document.getElementById("userEmail");
 const userPass = document.getElementById("userPass");
 const signUpButton = document.getElementById("signUpButton");
 const signOutButton = document.getElementById("signOutButton");
+const questionMasterButton = document.getElementById("questionMasterButton");
 
 let questionNumber = 0;
 let i;
@@ -272,9 +273,11 @@ let correctAnswerCounter = 0;
 let numberOfQuestionsAnswered = 0;
 let paint = false;
 let contenedor = [];
+let contenedorMaster = [];
 let inputTagToManage;
 let emptyAnswer = true;
-let userId;
+let userEmailValue = "";
+let userAuthenticated = false;
 
 function printTheInput(questions, questionNumber, i){
             choicesDiv = document.getElementById("containerPack");
@@ -348,10 +351,40 @@ function printQuestion(questions,questionNumber){
 }
 
 function printQandA(questions,questionNumber){
-
     printQuestion(questions,questionNumber);
     printChoices(questions,questionNumber);
+}
 
+function printQuestionMaster(quote){
+    questionsDiv = document.getElementById("containerPackMaster");
+
+    title = document.createElement("legend");
+    title.innerText = quote.title;
+    questionsDiv.appendChild(title);
+
+    printName = document.createAttribute("name"); 
+    printName.value = `question${quote.id}`;  
+    printParagraph.setAttributeNode(printName);
+
+    contenedorMaster.push(title);
+
+    // for (let index2 = 0; index2 < quote.choices.length; index2++) {
+
+    // choice = document.createElement("legend");
+    // choice.innerText = quote.choices[index2].label;
+    // questionsDiv.appendChild(choice);
+ 
+    // result1 = document.querySelector('#results');
+    
+    // printParagraph = document.createElement("p"); 
+    // printParagraph.innerText = `${index2 + 1}${". "}${quote.meanings[0].definitions[index2].definition}`;
+    // result1.appendChild(printParagraph); 
+
+    // printId = document.createAttribute("id"); 
+    // printId.value = `paragraph${index2}`;  
+    // printParagraph.setAttributeNode(printId);
+
+    // contenedorMaster.push(title);
 }
 
 function erase(){
@@ -458,24 +491,37 @@ function removeButton(){
     startButton.classList.add("displayNone");
 }
 
-function signOut() {
+function verifyAccess() {
     const options = {
       method: 'GET',
       headers:{'Content-Type': 'application/json'}
     }
     const localStorageId = JSON.parse(window.localStorage.getItem("alfarogr@hotmail.com"));
-    //console.log(`localStorageId: ${localStorageId}`);
-    //console.log(`userId: ${userId}`);
-    fetch(`quiz/users/logout/${localStorageId}`, options)
+    fetch(`quiz/users/authentication/${localStorageId}`, options)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 200) {
+                alert("Usuario autenticado");
+                return userAuthenticated = true;
+            }
+            else if (data.status === 400) {
+                alert("Acceso no autorizado");
+                setTimeout(function(){
+                    window.location.href = "http://localhost:4000/signin.html"
+                }, 1000);
+            }
+        })
+        .catch(err => console.log(err))
+  }
 
-        // .then(response => response.json())
-        // .then(data => {                      
-        //     if (data.status === 200){
-        //         alert("Adiós");
-        //         window.location.href = data.url;
-        //     }
-        // })
-    
+function signOut(userEmailValue) {
+    const options = {
+      method: 'GET',
+      headers:{'Content-Type': 'application/json'}
+    }
+    console.log(`userEmailValue: ${userEmailValue}`);
+    const localStorageId = JSON.parse(window.localStorage.getItem("alfarogr@hotmail.com"));
+    fetch(`quiz/users/logout/${localStorageId}`, options)
         .then(response => {
             if (response.status === 200) {
                 alert("Adiós");
@@ -502,7 +548,7 @@ function signUp() {
                     window.location.href = "http://localhost:4000/home.html"
                 }, 1000);
                 window.localStorage.setItem(userEmail.value, JSON.stringify(data.data));
-                userId = userEmail.value;
+                return userEmailValue = userEmail.value;
             }
             else if (data.status === 400) {
                 alert("Error en registro. Contacte con el administrador de la aplicación");
@@ -510,7 +556,7 @@ function signUp() {
                     window.location.href = "http://localhost:4000/index.html"
                 }, 1000);
             }     
-            return userId;       
+               
         })
         .catch(err => console.log(err))
   }
@@ -522,41 +568,25 @@ function signIn() {
     }
     
     fetch(`quiz/users/login/${userEmail.value}`, options)
-        // .then(response => {
-        //     if (response.status === 200) {
-        //         alert("Bienvenido")
-        //         setTimeout(function(){
-        //             window.location.href = "http://localhost:4000/home.html"
-        //         }, 1000);
-        //         window.localStorage.setItem(userEmail.value, JSON.stringify(response.data));
-        //         userId = userEmail.value;
-        //     }
-        //     else if (response.status === 400) {
-        //         setTimeout(function(){
-        //             window.location.href = "http://localhost:4000/signup.html"
-        //         }, 1000);
-        //     }
-        // })
-
         .then(response => response.json())
-        .then(data => {          
-            const logInData = JSON.stringify(data);            
+        .then(data => {                    
             if (data.status === 200) {
                 alert("Bienvenido");
                 setTimeout(function(){
                     window.location.href = "http://localhost:4000/home.html"
                 }, 1000);
                 window.localStorage.setItem(userEmail.value, JSON.stringify(data.data));
-                userId = userEmail.value;
+                return userEmailValue = userEmail.value;
             }
             else if (data.status === 400) {
                 setTimeout(function(){
                     window.location.href = "http://localhost:4000/signup.html"
                 }, 1000);
-            }        
-            return userId;
+            };        
         })
-        .catch(err => console.log(err))        
+        .catch(err => console.log(err))   
+        
+        
   }
 
 if (startButton) {
@@ -607,6 +637,7 @@ if (container) {
     });
 }
 //--------------------------------------------------------------
+// App Authentication management
 
 if(signUpButton){
     signUpButton.addEventListener('click', () => {
@@ -631,16 +662,26 @@ if(signInButton){
             }, 2000);            
         } 
         else {
-            userId = userEmail.value;
             signIn();
         }
-        return userId;
+    
     });
 }
 
-if(signOutButton){
-    console.log(`UserId en signOut: ${userId}`);
-    signOutButton.addEventListener('click', () => {           
-            signOut();
+if(signOutButton){    
+    signOutButton.addEventListener('click', () => {                  
+            signOut(userEmailValue);
     });
+}
+
+//--------------------------------------------------------------
+// Question Master Management
+
+if(questionMasterButton){
+questionMasterButton.addEventListener('click', () => {       
+    verifyAccess();    
+    if (userAuthenticated == false){        
+        window.location.href = "http://localhost:4000/questions.html";
+    }
+});
 }
