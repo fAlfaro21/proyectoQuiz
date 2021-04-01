@@ -9,6 +9,24 @@ const QuestionsSchema = new Schema([
                 id: String,
                 name: String,
                 value: String,
+            },
+            {
+                label: String,
+                id: String,
+                name: String,
+                value: String,
+            },
+            {
+                label: String,
+                id: String,
+                name: String,
+                value: String,
+            },
+            {
+                label: String,
+                id: String,
+                name: String,
+                value: String,
             }
                 ],
       answer: String

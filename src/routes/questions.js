@@ -1,26 +1,54 @@
 const route = require('express').Router();
-const User = require('../models/User');
+const model = require('../models/Questions');
 const jwt = require('jsonwebtoken'); //HMAC SHA256
 
 // Endpoints relativos a Questions
 
-route.get('/getquestions/:localSotrageId', async (req, res) => {
-    const localSotrageId = req.params.localSotrageId;
+route.post('/createquestions', async (req, res) => {
   try {
-    if (localSotrageId != ""){
-      const tokenDecoded = jwt.decode(localSotrageId); 
-      const userData = await User.findOne({email: tokenDecoded.user});
-      const tokenVerified = JSON.stringify (jwt.verify(localSotrageId, userData.secret));  
-        res.status(200).json({
-          Data: userData,
-          Ok: true,
-          Token: localSotrageId,
+    console.log(req.body);
+    if (req.body != ""){
+      const newQuestion = new model({
+          title: req.body.title, 
+
+          choices: [
+            {
+              label: req.body.label,
+              id: req.body.id,
+              name: req.body.name,
+              value: req.body.value
+            },
+            {
+              label: req.body.label,
+              id: req.body.id,
+              name: req.body.name,
+              value: req.body.value
+            },
+            {
+              label: req.body.label,
+              id: req.body.id,
+              name: req.body.name,
+              value: req.body.value
+            },
+            {
+              label: req.body.label,
+              id: req.body.id,
+              name: req.body.name,
+              value: req.body.value
+            },
+          ],
+          answer: req.body.answer
         });
+      const questionData = newQuestion.save();  
+      res.status(200).json({
+        Data: questionData,
+        Ok: true,
+      });
   };
   } catch (err) {
     console.log(err);
     res.status(400).json({
-      Message: "Token desconocido o inválido",
+      Message: "Error de lectura",
       Ok: false,
     });
   }

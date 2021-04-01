@@ -261,6 +261,33 @@ const userPass = document.getElementById("userPass");
 const signUpButton = document.getElementById("signUpButton");
 const signOutButton = document.getElementById("signOutButton");
 const questionMasterButton = document.getElementById("questionMasterButton");
+const newQuestionButton = document.getElementById("newQuestionButton");
+const createQuestion = document.getElementById("createQuestion");
+
+const questionTitle = document.getElementById("questionTitle"); 
+
+const choiceTitle1 = document.getElementById("choiceTitle1");
+const choiceId1 = document.getElementById("choiceId1");
+const choiceName1 = document.getElementById("choiceName1");
+const choiceValue1 = document.getElementById("choiceValue1");
+
+const choiceTitle2 = document.getElementById("choiceTitle2");
+const choiceId2 = document.getElementById("choiceId2");
+const choiceName2 = document.getElementById("choiceName2");
+const choiceValue2 = document.getElementById("choiceValue2");
+
+const choiceTitle3 = document.getElementById("choiceTitle3");
+const choiceId3 = document.getElementById("choiceId3");
+const choiceName3 = document.getElementById("choiceName3");
+const choiceValue3 = document.getElementById("choiceValue3");
+
+const choiceTitle4 = document.getElementById("choiceTitle4");
+const choiceId4 = document.getElementById("choiceId4");
+const choiceName4 = document.getElementById("choiceName4");
+const choiceValue4 = document.getElementById("choiceValue4");
+
+const choiceAnswer = document.getElementById("choiceAnswer");
+
 
 let questionNumber = 0;
 let i;
@@ -491,12 +518,75 @@ function removeButton(){
     startButton.classList.add("displayNone");
 }
 
+function createQuestions(){
+
+    const options = {
+        method: 'POST',
+        body: JSON.stringify({
+            title: questionTitle.value,
+            choices:
+            [
+                {
+                    label: choiceTitle1.value,
+                    id: choiceId1.value,
+                    name: choiceName1.value,
+                    value: choiceValue1.value
+                },
+                {
+                    label: choiceTitle2.value,
+                    id: choiceId2.value,
+                    name: choiceName2.value,
+                    value: choiceValue2.value
+                },
+                {
+                    label: choiceTitle3.value,
+                    id: choiceId3.value,
+                    name: choiceName3.value,
+                    value: choiceValue3.value
+                },
+                {
+                    label: choiceTitle4.value,
+                    id: choiceId4.value,
+                    name: choiceName4.value,
+                    value: choiceValue4.value
+                },
+            ],
+            answer: choiceAnswer.value,
+        }),
+        headers:{'Content-Type': 'application/json'}
+      }
+      
+      fetch(`quiz/questions/createquestions`, options)
+          .then(response => response.json())
+          .then(data => {                    
+              if (data.status === 200) {
+                  alert("Pregunta registrada");
+                  setTimeout(function(){
+                      window.location.href = "http://localhost:4000/questions.html"
+                  }, 1000);
+              }
+              else if (data.status === 400) {
+                  alert("Error en registro. Contacte con el administrador de la aplicación");
+                  setTimeout(function(){
+                      window.location.href = "http://localhost:4000/questions.html"
+                  }, 1000);
+              }     
+                 
+          })
+          .catch(err => console.log(err))
+
+}
+
+// function getquestions(){
+
+// }
+
 function verifyAccess() {
     const options = {
       method: 'GET',
       headers:{'Content-Type': 'application/json'}
     }
-    const localStorageId = JSON.parse(window.localStorage.getItem("alfarogr@hotmail.com"));
+    const localStorageId = JSON.parse(window.localStorage.getItem("Token"));
     fetch(`quiz/users/authentication/${localStorageId}`, options)
         .then(response => response.json())
         .then(data => {
@@ -520,7 +610,7 @@ function signOut(userEmailValue) {
       headers:{'Content-Type': 'application/json'}
     }
     console.log(`userEmailValue: ${userEmailValue}`);
-    const localStorageId = JSON.parse(window.localStorage.getItem("alfarogr@hotmail.com"));
+    const localStorageId = JSON.parse(window.localStorage.getItem("Token"));
     fetch(`quiz/users/logout/${localStorageId}`, options)
         .then(response => {
             if (response.status === 200) {
@@ -547,8 +637,8 @@ function signUp() {
                 setTimeout(function(){
                     window.location.href = "http://localhost:4000/home.html"
                 }, 1000);
-                window.localStorage.setItem(userEmail.value, JSON.stringify(data.data));
-                return userEmailValue = userEmail.value;
+                // window.localStorage.setItem(userEmail.value, JSON.stringify(data.data));
+                window.localStorage.setItem("Token", JSON.stringify(data.data));
             }
             else if (data.status === 400) {
                 alert("Error en registro. Contacte con el administrador de la aplicación");
@@ -575,7 +665,8 @@ function signIn() {
                 setTimeout(function(){
                     window.location.href = "http://localhost:4000/home.html"
                 }, 1000);
-                window.localStorage.setItem(userEmail.value, JSON.stringify(data.data));
+                // window.localStorage.setItem(userEmail.value, JSON.stringify(data.data));
+                window.localStorage.setItem("Token", JSON.stringify(data.data));
                 return userEmailValue = userEmail.value;
             }
             else if (data.status === 400) {
@@ -677,11 +768,30 @@ if(signOutButton){
 //--------------------------------------------------------------
 // Question Master Management
 
-if(questionMasterButton){
-questionMasterButton.addEventListener('click', () => {       
-    verifyAccess();    
-    if (userAuthenticated == false){        
-        window.location.href = "http://localhost:4000/questions.html";
+if(createQuestion){
+    createQuestion.addEventListener('click', () => {       
+        verifyAccess();    
+        if (userAuthenticated == false){        
+            createQuestions();
+        }
+    });
     }
-});
-}
+
+if(newQuestionButton){
+    newQuestionButton.addEventListener('click', () => {       
+        verifyAccess();    
+        if (userAuthenticated == false){        
+            window.location.href = "http://localhost:4000/createquestions.html";
+        }
+    });
+    }
+
+if(questionMasterButton){
+    questionMasterButton.addEventListener('click', () => {       
+        verifyAccess();    
+        if (userAuthenticated == false){        
+            window.location.href = "http://localhost:4000/questions.html";
+        }
+        //getquestions();
+    });
+    }
